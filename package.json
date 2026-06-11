@@ -1,0 +1,20 @@
+{
+  "name": "phishare",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm run -r --parallel --aggregate-output dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.5.1",
+      "onFail": "download"
+    }
+  },
+  "private": true
+}
