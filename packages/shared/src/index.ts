@@ -1,13 +1,15 @@
-type ApiSuccess<T> = {
+type ErrorType = "AUTHENTICATION" | "NOT FOUND" | "SERVER" | {};
+
+export type ApiSuccess<T> = {
   success: true;
   data: T;
 };
 
-type ApiError = {
+export type ApiError = {
   success: false;
   error: {
     message: string;
-    type: string;
+    type: ErrorType;
     field?: Record<string, string[]>;
   };
 };
