@@ -1,4 +1,5 @@
-import * as React from "react"
+import { useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import {
   ArrowLeftIcon,
   SearchIcon,
@@ -11,25 +12,47 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import { PhotoCard } from "@/components/PhotoCard"
+import { PhotoLightbox } from "@/components/PhotoLightbox"
 
-interface AlbumDetailProps {
-  albumId: string
-  onBack: () => void
-}
-
-export function AlbumDetailScreen({ albumId, onBack }: AlbumDetailProps) {
-  const [selectedFace, setSelectedFace] = React.useState<number | null>(null)
-  const [isSearching, setIsSearching] = React.useState(false)
+export function AlbumDetailScreen() {
+  const { albumId } = useParams<{ albumId: string }>()
+  const navigate = useNavigate()
+  const [selectedFace, setSelectedFace] = useState<number | null>(null)
+  const [isSearching, setIsSearching] = useState(false)
 
   const faces = Array.from({ length: 10 }).map((_, i) => ({
     id: i,
     url: `https://i.pravatar.cc/150?u=${i + 100}`,
   }))
 
+  const [selectedPhotoId, setSelectedPhotoId] = useState<number | null>(null)
+
   const photos = Array.from({ length: 24 }).map((_, i) => ({
     id: i,
     url: `https://picsum.photos/seed/${albumId}-${i}/800/800`,
+    name: `photo-${albumId}-${i}.jpg`,
+    size: `${(Math.random() * 8 + 0.5).toFixed(1)} MB`,
+    dimensions: "4000×3000",
+    date: "June 12, 2026",
+    uploadedBy: "John Doe",
   }))
+
+  const selectedPhoto = selectedPhotoId !== null
+    ? photos[selectedPhotoId]
+    : null
+
+  const handlePrevPhoto = () => {
+    if (selectedPhotoId !== null && selectedPhotoId > 0) {
+      setSelectedPhotoId(selectedPhotoId - 1)
+    }
+  }
+
+  const handleNextPhoto = () => {
+    if (selectedPhotoId !== null && selectedPhotoId < photos.length - 1) {
+      setSelectedPhotoId(selectedPhotoId + 1)
+    }
+  }
 
   return (
     <div className="animate-in space-y-8 pb-20 duration-500 fade-in slide-in-from-right-4">
@@ -38,7 +61,7 @@ export function AlbumDetailScreen({ albumId, onBack }: AlbumDetailProps) {
         <Button
           variant="ghost"
           size="sm"
-          onClick={onBack}
+          onClick={() => navigate(-1)}
           className="-ml-2 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeftIcon className="mr-2 h-4 w-4" /> Back to Albums
@@ -75,7 +98,7 @@ export function AlbumDetailScreen({ albumId, onBack }: AlbumDetailProps) {
           </div>
           <Button
             variant={isSearching ? "default" : "secondary"}
-            className="rounded-md"
+            className="min-w-[140px] rounded-md"
             onClick={() => setIsSearching(!isSearching)}
           >
             <FilterIcon className="mr-2 h-4 w-4" />
@@ -153,29 +176,25 @@ export function AlbumDetailScreen({ albumId, onBack }: AlbumDetailProps) {
       {/* Photo Grid */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
         {photos.map((photo) => (
-          <div
+          <PhotoCard
             key={photo.id}
-            className="group relative aspect-square overflow-hidden rounded-md bg-muted shadow-sm transition-all duration-300 hover:shadow-md"
-          >
-            <img
-              src={photo.url}
-              alt={`Photo ${photo.id}`}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-            <div className="absolute top-2 right-2 scale-90 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100">
-              <Button
-                variant="secondary"
-                size="icon"
-                className="size-8 rounded-md shadow-lg"
-              >
-                <Share2Icon className="size-3.5" />
-              </Button>
-            </div>
-          </div>
+            id={photo.id}
+            url={photo.url}
+            onClick={() => setSelectedPhotoId(photo.id)}
+          />
         ))}
       </div>
+
+      {selectedPhoto && (
+        <PhotoLightbox
+          photo={selectedPhoto}
+          onClose={() => setSelectedPhotoId(null)}
+          onPrev={selectedPhotoId !== null && selectedPhotoId > 0 ? handlePrevPhoto : undefined}
+          onNext={selectedPhotoId !== null && selectedPhotoId < photos.length - 1 ? handleNextPhoto : undefined}
+          hasPrev={selectedPhotoId !== null && selectedPhotoId > 0}
+          hasNext={selectedPhotoId !== null && selectedPhotoId < photos.length - 1}
+        />
+      )}
     </div>
   )
 }

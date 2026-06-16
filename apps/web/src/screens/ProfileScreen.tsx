@@ -9,8 +9,19 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { useAuth } from "@/context/AuthProvider"
+import { useNavigate } from "react-router-dom"
 
 export function ProfileScreen() {
+  const navigate = useNavigate()
+  const { user, logout } = useAuth()
+  const initials = user?.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
+
   const menuItems = [
     {
       icon: SettingsIcon,
@@ -39,8 +50,8 @@ export function ProfileScreen() {
       <div className="flex flex-col items-center space-y-4 pt-6 text-center">
         <div className="relative">
           <Avatar className="size-24 border-4 border-background shadow-xl">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarImage src={user?.image ?? undefined} />
+            <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <Button
             size="icon"
@@ -50,8 +61,8 @@ export function ProfileScreen() {
           </Button>
         </div>
         <div className="space-y-1">
-          <h2 className="text-2xl font-extrabold tracking-tight">John Doe</h2>
-          <p className="font-medium text-muted-foreground">john@example.com</p>
+          <h2 className="text-2xl font-extrabold tracking-tight">{user?.name}</h2>
+          <p className="font-medium text-muted-foreground">{user?.email}</p>
         </div>
         <div className="flex items-center gap-2 rounded-md bg-primary/10 px-4 py-1.5 text-xs font-bold tracking-wider text-primary uppercase">
           Free Account
@@ -97,7 +108,11 @@ export function ProfileScreen() {
 
       <Button
         variant="destructive"
-        className="h-12 w-full rounded-md font-bold tracking-tight shadow-lg shadow-destructive/10"
+        className="h-10 w-full rounded-md font-semibold tracking-tight"
+        onClick={async () => {
+          await logout()
+          navigate("/login")
+        }}
       >
         <LogOutIcon className="mr-2 h-4 w-4" /> Log out
       </Button>

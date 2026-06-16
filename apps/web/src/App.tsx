@@ -1,59 +1,36 @@
-import * as React from "react"
+import { Navigate, Route, Routes } from "react-router-dom"
 import { ThemeProvider } from "@/components/theme-provider"
-import { MainLayout, type Tab } from "@/components/layout"
+import { MainLayout } from "@/components/layout"
+import { ProtectedRoute } from "@/components/ProtectedRoute"
+import { LoginScreen } from "@/screens/LoginScreen"
+import { SignupScreen } from "@/screens/SignupScreen"
 import { HomeScreen } from "@/screens/HomeScreen"
 import { SharedScreen } from "@/screens/SharedScreen"
 import { ActivityScreen } from "@/screens/ActivityScreen"
 import { ProfileScreen } from "@/screens/ProfileScreen"
 import { AlbumDetailScreen } from "@/screens/AlbumDetailScreen"
+import { AuthProvider } from "./context/AuthProvider"
 
 export function App() {
-  const [activeTab, setActiveTab] = React.useState<Tab>("home")
-  const [selectedAlbumId, setSelectedAlbumId] = React.useState<string | null>(
-    null
-  )
-
-  const handleSelectAlbum = (id: string) => {
-    setSelectedAlbumId(id)
-  }
-
-  const handleBackToAlbums = () => {
-    setSelectedAlbumId(null)
-  }
-
-  const handleTabChange = (tab: Tab) => {
-    setActiveTab(tab)
-    setSelectedAlbumId(null) // Reset deep view when switching tabs
-  }
-
   return (
-    <ThemeProvider defaultTheme="system" storageKey="phishare-theme">
-      <MainLayout activeTab={activeTab} onTabChange={handleTabChange}>
-        {activeTab === "home" &&
-          (selectedAlbumId ? (
-            <AlbumDetailScreen
-              albumId={selectedAlbumId}
-              onBack={handleBackToAlbums}
-            />
-          ) : (
-            <HomeScreen onSelectAlbum={handleSelectAlbum} />
-          ))}
-
-        {activeTab === "shared" &&
-          (selectedAlbumId ? (
-            <AlbumDetailScreen
-              albumId={selectedAlbumId}
-              onBack={handleBackToAlbums}
-            />
-          ) : (
-            <SharedScreen onSelectAlbum={handleSelectAlbum} />
-          ))}
-
-        {activeTab === "activity" && <ActivityScreen />}
-
-        {activeTab === "profile" && <ProfileScreen />}
-      </MainLayout>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider defaultTheme="system" storageKey="phishare-theme">
+        <Routes>
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/signup" element={<SignupScreen />} />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Navigate to="/my-albums" replace />} />
+              <Route path="/my-albums" element={<HomeScreen />} />
+              <Route path="/shared" element={<SharedScreen />} />
+              <Route path="/activity" element={<ActivityScreen />} />
+              <Route path="/profile" element={<ProfileScreen />} />
+              <Route path="/album/:albumId" element={<AlbumDetailScreen />} />
+            </Route>
+          </Route>
+        </Routes>
+      </ThemeProvider>
+    </AuthProvider>
   )
 }
 

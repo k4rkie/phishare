@@ -1,12 +1,10 @@
-import * as React from "react"
+import { useState } from "react"
 import { SearchIcon, UserPlusIcon, ArrowRightIcon, SparklesIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-
 export function PeopleScreen() {
-  const [searchQuery, setSearchQuery] = React.useState("")
+  const [searchQuery, setSearchQuery] = useState("")
 
   const suggestions = [
     { id: 1, name: "Family", count: 42, icon: SparklesIcon },

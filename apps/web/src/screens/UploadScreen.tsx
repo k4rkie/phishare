@@ -1,4 +1,4 @@
-import * as React from "react"
+import { useState } from "react"
 import { UploadIcon, CheckCircle2Icon, ImageIcon, ChevronDownIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -13,8 +13,8 @@ import {
 import { cn } from "@/lib/utils"
 
 export function UploadScreen() {
-  const [isDragging, setIsDragging] = React.useState(false)
-  const [selectedAlbum, setSelectedAlbum] = React.useState("Summer Wedding")
+  const [isDragging, setIsDragging] = useState(false)
+  const [selectedAlbum, setSelectedAlbum] = useState("Summer Wedding")
   
   const albums = ["Summer Wedding", "Birthday Party", "Graduation", "Family Reunion"]
 
@@ -32,7 +32,7 @@ export function UploadScreen() {
              <div className="space-y-1">
                 <label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Select Album</label>
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                  <DropdownMenuTrigger>
                     <Button variant="outline" className="w-full md:w-64 justify-between rounded-xl h-12">
                       <div className="flex items-center gap-2">
                         <ImageIcon className="size-4 text-primary" />
