@@ -6,7 +6,7 @@ export const album = pgTable("album", {
   name: text("name").notNull(),
   description: text("description"),
   coverPhotoKey: text("cover_photo_key"),
-  ownerId: uuid("owner_id")
+  ownerId: text("owner_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
