@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom"
 import { PlusIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AlbumCard } from "@/components/AlbumCard"
+import { CreateAlbumModal } from "@/components/CreateAlbumModal"
+import { useState } from "react"
 
 interface Album {
   id: string
@@ -13,6 +15,7 @@ interface Album {
 
 export function HomeScreen() {
   const navigate = useNavigate()
+  const [isCreateAlbumModalOpen, setIsCreateAlbumModalOpen] = useState(false)
 
   const albums: Album[] = [
     {
@@ -51,24 +54,35 @@ export function HomeScreen() {
         <div className="space-y-1">
           <h2 className="text-3xl font-extrabold tracking-tight">My Albums</h2>
         </div>
-        <Button className="font-bold shadow-md shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30">
+        <Button
+          className="font-bold shadow-md shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30"
+          onClick={() => setIsCreateAlbumModalOpen(true)}
+        >
           <PlusIcon className="mr-2 h-4 w-4 stroke-[3px]" /> New Album
         </Button>
+        <CreateAlbumModal
+          isOpen={isCreateAlbumModalOpen}
+          onClose={() => setIsCreateAlbumModalOpen(false)}
+        />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5">
-        {albums.map((album) => (
-          <AlbumCard
-            key={album.id}
-            id={album.id}
-            title={album.title}
-            date={album.date}
-            count={album.count}
-            coverUrl={album.coverUrl}
-            onSelect={(id) => navigate(`/album/${id}`)}
-          />
-        ))}
-      </div>
+      {albums.length > 0 ? (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5">
+          {albums.map((album) => (
+            <AlbumCard
+              key={album.id}
+              id={album.id}
+              title={album.title}
+              date={album.date}
+              count={album.count}
+              coverUrl={album.coverUrl}
+              onSelect={(id) => navigate(`/album/${id}`)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="">No albums</div>
+      )}
     </div>
   )
 }
