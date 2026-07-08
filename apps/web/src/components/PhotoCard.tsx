@@ -19,7 +19,7 @@ export function PhotoCard({ id, url, onClick }: PhotoCardProps) {
     <div
       className={cn(
         "group relative aspect-square overflow-hidden rounded-md bg-muted shadow-sm transition-all duration-300 hover:shadow-md",
-        onClick && "cursor-pointer",
+        onClick && "cursor-pointer"
       )}
       onClick={onClick}
     >
@@ -32,7 +32,10 @@ export function PhotoCard({ id, url, onClick }: PhotoCardProps) {
 
       <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
 
-      <div className="absolute top-1 right-1" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="absolute top-1 right-1"
+        onClick={(e) => e.stopPropagation()}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button

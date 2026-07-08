@@ -1,55 +1,40 @@
 import { useNavigate } from "react-router-dom"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon, ImagesIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AlbumCard } from "@/components/AlbumCard"
 import { CreateAlbumModal } from "@/components/CreateAlbumModal"
-import { useState } from "react"
-
-interface Album {
-  id: string
-  title: string
-  date: string
-  count: number
-  coverUrl: string
-}
+import { useEffect, useState } from "react"
+import { FetchFromAPI } from "@/utils/fetch"
+import type { Album } from "@phishare/shared"
 
 export function HomeScreen() {
   const navigate = useNavigate()
   const [isCreateAlbumModalOpen, setIsCreateAlbumModalOpen] = useState(false)
+  const [albums, setAlbums] = useState<Album[]>([])
+  const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL
 
-  const albums: Album[] = [
-    {
-      id: "1",
-      title: "Summer Wedding",
-      date: "June 12, 2026",
-      count: 124,
-      coverUrl: "https://picsum.photos/seed/wedding/800/600",
-    },
-    {
-      id: "2",
-      title: "Birthday Party",
-      date: "May 20, 2026",
-      count: 86,
-      coverUrl: "https://picsum.photos/seed/party/800/600",
-    },
-    {
-      id: "3",
-      title: "Graduation",
-      date: "May 15, 2026",
-      count: 42,
-      coverUrl: "https://picsum.photos/seed/grad/800/600",
-    },
-    {
-      id: "4",
-      title: "Family Reunion",
-      date: "April 10, 2026",
-      count: 210,
-      coverUrl: "https://picsum.photos/seed/family/800/600",
-    },
-  ]
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const fetchedData = await FetchFromAPI<Album[]>(
+          `${BASE_URL}/api/albums`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        )
+        if (!fetchedData.success) return
+        setAlbums(fetchedData.data)
+      } catch (err) {}
+    })()
+  }, [])
+
+  const handleAlbumCreation = (album: Album) => {
+    return setAlbums((prevAlbums) => [...prevAlbums, album])
+  }
 
   return (
-    <div className="animate-in space-y-8 pb-20 duration-500 fade-in">
+    <div className="flex min-h-full animate-in flex-col gap-8 pb-20 duration-500 fade-in">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h2 className="text-3xl font-extrabold tracking-tight">My Albums</h2>
@@ -63,6 +48,7 @@ export function HomeScreen() {
         <CreateAlbumModal
           isOpen={isCreateAlbumModalOpen}
           onClose={() => setIsCreateAlbumModalOpen(false)}
+          onAlbumCreation={handleAlbumCreation}
         />
       </div>
 
@@ -72,16 +58,26 @@ export function HomeScreen() {
             <AlbumCard
               key={album.id}
               id={album.id}
-              title={album.title}
-              date={album.date}
-              count={album.count}
-              coverUrl={album.coverUrl}
+              title={album.name}
+              date={new Date(album.createdAt).toISOString()}
+              count={album.imageCount}
+              coverUrl={album.coverImageURL}
               onSelect={(id) => navigate(`/album/${id}`)}
             />
           ))}
         </div>
       ) : (
-        <div className="">No albums</div>
+        <div className="flex flex-1 flex-col items-center justify-center text-center">
+          <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-muted">
+            <ImagesIcon className="size-10 text-muted-foreground" />
+          </div>
+          <h3 className="text-xl font-bold tracking-tight">No albums yet</h3>
+          <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+            Click the{" "}
+            <span className="font-semibold text-foreground">New Album</span>{" "}
+            button above to create your first album and start sharing photos.
+          </p>
+        </div>
       )}
     </div>
   )

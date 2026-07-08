@@ -81,10 +81,7 @@ function AvatarGroup({ className, ...props }: ComponentProps<"div">) {
   )
 }
 
-function AvatarGroupCount({
-  className,
-  ...props
-}: ComponentProps<"div">) {
+function AvatarGroupCount({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="avatar-group-count"

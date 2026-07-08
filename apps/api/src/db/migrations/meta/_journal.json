@@ -15,6 +15,20 @@
       "when": 1781706258712,
       "tag": "0001_woozy_green_goblin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782457453565,
+      "tag": "0002_flaky_rockslide",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1783483126571,
+      "tag": "0003_sleepy_vargas",
+      "breakpoints": true
     }
   ]
 }

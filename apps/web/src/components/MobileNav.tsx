@@ -19,9 +19,7 @@ export function MobileNav() {
           className={({ isActive }) =>
             cn(
               "relative flex h-full w-full flex-col items-center justify-center gap-1 transition-all duration-300",
-              isActive
-                ? "text-primary"
-                : "text-muted-foreground/80",
+              isActive ? "text-primary" : "text-muted-foreground/80"
             )
           }
         >
@@ -32,24 +30,20 @@ export function MobileNav() {
                   "rounded-2xl p-1.5 transition-all duration-300",
                   isActive
                     ? "bg-primary/10 shadow-[0_0_20px_rgba(var(--primary),0.1)]"
-                    : "",
+                    : ""
                 )}
               >
                 <item.icon
                   className={cn(
                     "size-6 transition-transform",
-                    isActive
-                      ? "scale-110 stroke-[2.5px]"
-                      : "stroke-[2px]",
+                    isActive ? "scale-110 stroke-[2.5px]" : "stroke-[2px]"
                   )}
                 />
               </div>
               <span
                 className={cn(
                   "text-[10px] font-bold tracking-widest uppercase transition-all",
-                  isActive
-                    ? "scale-100 opacity-100"
-                    : "scale-95 opacity-60",
+                  isActive ? "scale-100 opacity-100" : "scale-95 opacity-60"
                 )}
               >
                 {item.label}

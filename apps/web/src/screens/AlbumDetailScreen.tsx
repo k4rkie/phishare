@@ -38,9 +38,8 @@ export function AlbumDetailScreen() {
     uploadedBy: "John Doe",
   }))
 
-  const selectedPhoto = selectedPhotoId !== null
-    ? photos[selectedPhotoId]
-    : null
+  const selectedPhoto =
+    selectedPhotoId !== null ? photos[selectedPhotoId] : null
 
   const handlePrevPhoto = () => {
     if (selectedPhotoId !== null && selectedPhotoId > 0) {
@@ -189,10 +188,20 @@ export function AlbumDetailScreen() {
         <PhotoLightbox
           photo={selectedPhoto}
           onClose={() => setSelectedPhotoId(null)}
-          onPrev={selectedPhotoId !== null && selectedPhotoId > 0 ? handlePrevPhoto : undefined}
-          onNext={selectedPhotoId !== null && selectedPhotoId < photos.length - 1 ? handleNextPhoto : undefined}
+          onPrev={
+            selectedPhotoId !== null && selectedPhotoId > 0
+              ? handlePrevPhoto
+              : undefined
+          }
+          onNext={
+            selectedPhotoId !== null && selectedPhotoId < photos.length - 1
+              ? handleNextPhoto
+              : undefined
+          }
           hasPrev={selectedPhotoId !== null && selectedPhotoId > 0}
-          hasNext={selectedPhotoId !== null && selectedPhotoId < photos.length - 1}
+          hasNext={
+            selectedPhotoId !== null && selectedPhotoId < photos.length - 1
+          }
         />
       )}
     </div>

@@ -19,33 +19,43 @@ export function SharedScreen() {
   const navigate = useNavigate()
 
   const sharedAlbums: SharedAlbum[] = [
-    { 
-      id: "s1", 
-      title: "Paris Trip", 
-      date: "June 05, 2026", 
-      count: 245, 
+    {
+      id: "s1",
+      title: "Paris Trip",
+      date: "June 05, 2026",
+      count: 245,
       coverUrl: "https://picsum.photos/seed/paris/800/600",
-      sharedBy: { name: "Sarah Miller", avatarUrl: "https://i.pravatar.cc/150?u=sarah" }
+      sharedBy: {
+        name: "Sarah Miller",
+        avatarUrl: "https://i.pravatar.cc/150?u=sarah",
+      },
     },
-    { 
-      id: "s2", 
-      title: "Company Retreat", 
-      date: "May 28, 2026", 
-      count: 156, 
+    {
+      id: "s2",
+      title: "Company Retreat",
+      date: "May 28, 2026",
+      count: 156,
       coverUrl: "https://picsum.photos/seed/office/800/600",
-      sharedBy: { name: "Mark Wilson", avatarUrl: "https://i.pravatar.cc/150?u=mark" }
+      sharedBy: {
+        name: "Mark Wilson",
+        avatarUrl: "https://i.pravatar.cc/150?u=mark",
+      },
     },
   ]
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="animate-in space-y-8 duration-500 fade-in">
       <div className="flex flex-col gap-1">
-        <h2 className="text-3xl font-extrabold tracking-tight">Shared with You</h2>
-        <p className="text-muted-foreground font-medium">Albums you've been invited to by others.</p>
+        <h2 className="text-3xl font-extrabold tracking-tight">
+          Shared with You
+        </h2>
+        <p className="font-medium text-muted-foreground">
+          Albums you've been invited to by others.
+        </p>
       </div>
 
       {sharedAlbums.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5">
           {sharedAlbums.map((album) => (
             <AlbumCard
               key={album.id}

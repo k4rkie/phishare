@@ -1,5 +1,5 @@
 import { useState, useRef, type ChangeEvent } from "react"
-import { ImageUpIcon, XIcon } from "lucide-react"
+import { ImageUpIcon, Loader2Icon, XIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -11,32 +11,43 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import type {
+  CreateAlbumRequest,
+  CreateAlbumResponse,
+  Album,
+} from "@phishare/shared"
+import { FetchFromAPI } from "@/utils/fetch"
+import toast from "react-hot-toast"
 
 type CreateAlbumModalProps = {
   isOpen: boolean
   onClose: () => void
+  onAlbumCreation: (album: Album) => void
 }
 
 type FieldErrors = Partial<
   Record<"name" | "description" | "coverImage" | "base", string>
 >
 
-export function CreateAlbumModal({ isOpen, onClose }: CreateAlbumModalProps) {
+export function CreateAlbumModal({
+  isOpen,
+  onClose,
+  onAlbumCreation,
+}: CreateAlbumModalProps) {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [coverImage, setCoverImage] = useState<File | null>(null)
   const [coverPreview, setCoverPreview] = useState<string | null>(null)
   const [errors, setErrors] = useState<FieldErrors>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const newErrors: FieldErrors = {}
+  const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       if (file.size > 10485760) {
-        newErrors.coverImage = "Image must be under 10MB"
-        return setErrors(newErrors)
+        return setErrors({ coverImage: "Image must be under 10MB" })
       }
       setCoverPreview(URL.createObjectURL(file))
       setCoverImage(file)
@@ -61,10 +72,13 @@ export function CreateAlbumModal({ isOpen, onClose }: CreateAlbumModalProps) {
     setCoverImage(null)
     setCoverPreview(null)
     setErrors({})
+    setIsSubmitting(false)
     onClose()
   }
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
+    const newErrors: FieldErrors = {}
+
     if (!coverImage) {
       newErrors.coverImage = "Please provide a cover image"
     }
@@ -72,18 +86,84 @@ export function CreateAlbumModal({ isOpen, onClose }: CreateAlbumModalProps) {
       newErrors.name = "Please provide the name"
     }
     if (description.length > 50) {
-      newErrors.name = "Description too long"
+      newErrors.description = "Description too long"
     }
 
     setErrors(newErrors)
     if (Object.keys(newErrors).length > 0) return
 
-    console.log("Album created:", {
+    const createAlbumData: CreateAlbumRequest = {
       name,
       description,
-      coverImage,
-    })
+      coverImageName: coverImage!.name,
+      contentType: coverImage!.type,
+    }
 
+    setIsSubmitting(true)
+
+    try {
+      const createAlbumResponse = await FetchFromAPI<CreateAlbumResponse>(
+        `${BASE_URL}/api/albums`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(createAlbumData),
+          credentials: "include",
+        }
+      )
+      if (!createAlbumResponse.success) {
+        console.log(createAlbumResponse.error.message)
+        toast.error(createAlbumResponse.error.message)
+        return
+      }
+      console.log("PUT URL:", createAlbumResponse.data)
+
+      const uploadImgToStoreResponse = await fetch(
+        createAlbumResponse.data.uploadURL,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": coverImage!.type,
+          },
+          body: coverImage,
+        }
+      )
+      if (!uploadImgToStoreResponse.ok) {
+        console.log("File Upload failed")
+        toast.error("Cover image upload failed")
+        return
+      }
+      console.log("File uplaoded to bucket")
+
+      const imgUploadSuccessResponse = await FetchFromAPI<Album>(
+        `${BASE_URL}/api/albums/success`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            albumId: createAlbumResponse.data.albumId,
+          }),
+          credentials: "include",
+        }
+      )
+      if (!imgUploadSuccessResponse.success) {
+        toast.error(imgUploadSuccessResponse.error.message)
+        return
+      }
+      console.log("Album creation Success: ", imgUploadSuccessResponse.data)
+      toast.success("Album created successfully")
+      onAlbumCreation(imgUploadSuccessResponse.data)
+    } catch (err) {
+      console.log("Album creation failed", err)
+      toast.error("Something went wrong while creating the album")
+      return
+    } finally {
+      setIsSubmitting(false)
+    }
     handleClose()
   }
 
@@ -186,7 +266,16 @@ export function CreateAlbumModal({ isOpen, onClose }: CreateAlbumModalProps) {
           <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleCreate}>Create</Button>
+          <Button disabled={isSubmitting} onClick={handleCreate}>
+            {isSubmitting ? (
+              <>
+                <Loader2Icon className="mr-2 size-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              "Create"
+            )}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -2,17 +2,17 @@ import { MoreVerticalIcon, CalendarIcon, ImageIcon } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-interface SharedBy {
+type SharedBy = {
   name: string
   avatarUrl: string
 }
 
-interface AlbumCardProps {
+type AlbumCardProps = {
   id: string
   title: string
   date: string
   count: number
-  coverUrl: string
+  coverUrl: string | undefined
   sharedBy?: SharedBy
   onSelect: (id: string) => void
 }

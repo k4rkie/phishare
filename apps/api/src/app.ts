@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth.js";
 import cors from "cors";
 import albumRouter from "./routers/album.routes.js";
 import logger from "@/middlewares/logger.middleware.js";
+import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.get("/api/health", (_req: Request, res: Response) => {
 });
 
 app.use("/api/albums", albumRouter);
+app.use(errorHandler);
 
 export default app;

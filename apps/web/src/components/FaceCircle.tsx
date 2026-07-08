@@ -7,7 +7,12 @@ interface FaceCircleProps {
   onClick: () => void
 }
 
-export function FaceCircle({ url, name, isSelected, onClick }: FaceCircleProps) {
+export function FaceCircle({
+  url,
+  name,
+  isSelected,
+  onClick,
+}: FaceCircleProps) {
   return (
     <button
       onClick={onClick}
@@ -15,7 +20,7 @@ export function FaceCircle({ url, name, isSelected, onClick }: FaceCircleProps) 
         "size-20 shrink-0 overflow-hidden rounded-full border-2 transition-all sm:size-24",
         isSelected
           ? "border-primary p-1"
-          : "border-transparent opacity-70 grayscale hover:opacity-100 hover:grayscale-0",
+          : "border-transparent opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
       )}
     >
       <img

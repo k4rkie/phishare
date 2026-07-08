@@ -27,9 +27,9 @@ type ThemeProviderState = {
 const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
 const THEME_VALUES: Theme[] = ["dark", "light", "system"]
 
-const ThemeProviderContext = createContext<
-  ThemeProviderState | undefined
->(undefined)
+const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
+  undefined
+)
 
 function isTheme(value: string | null): value is Theme {
   if (value === null) {

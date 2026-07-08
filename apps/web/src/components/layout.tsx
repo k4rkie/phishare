@@ -12,7 +12,7 @@ export function MainLayout() {
         <Header />
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-muted/20 p-6 md:p-10">
-          <div className="mx-auto w-full max-w-6xl">
+          <div className="mx-auto h-full w-full max-w-6xl">
             <Outlet />
           </div>
         </main>

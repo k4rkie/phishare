@@ -1,9 +1,5 @@
 import { NavLink } from "react-router-dom"
-import {
-  HomeIcon,
-  UsersIcon,
-  BellIcon,
-} from "lucide-react"
+import { HomeIcon, UsersIcon, BellIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
@@ -31,7 +27,7 @@ export function Sidebar() {
                 "group flex w-full items-center gap-3 rounded-md px-4 py-3 transition-all duration-200",
                 isActive
                   ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )
             }
           >
@@ -40,7 +36,7 @@ export function Sidebar() {
                 <item.icon
                   className={cn(
                     "size-5 transition-transform group-active:scale-90",
-                    isActive ? "" : "opacity-70",
+                    isActive ? "" : "opacity-70"
                   )}
                 />
                 <span className="text-sm font-semibold tracking-tight">
